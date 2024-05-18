@@ -135,7 +135,7 @@ if uploaded_file is not None:
             st.dataframe(emoji_df)
         with col2:
             fig,ax = plt.subplots()
-            ax.pie(emoji_df[1].head(),labels=emoji_df[0].head(),autopct="%0.2f")
+            ax.pie(emoji_df['Count'].head(),labels=emoji_df['Emoji'].head(),autopct="%0.2f")
             st.pyplot(fig)
 
 
