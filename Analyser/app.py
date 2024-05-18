@@ -2,13 +2,24 @@ import streamlit as st
 import preprocessor,helper
 import matplotlib.pyplot as plt
 import seaborn as sns
+from bs4 import BeautifulSoup
+import requests
 
 st.sidebar.title("Whatsapp Chat Analyzer")
 
-uploaded_file = st.sidebar.file_uploader("Choose a file")
+url = 'https://chat-connect-chat.netlify.app'
+
+page = requests.get(url)
+
+soup = BeautifulSoup(page.text, 'html')
+
+uploaded_file = soup
 if uploaded_file is not None:
-    bytes_data = uploaded_file.getvalue()
-    data = bytes_data.decode("utf-8")
+    chat=soup.find('div')
+    content=chat.text
+    cont=content.strip()
+    data=cont
+    
     df = preprocessor.preprocess(data)
 
     # fetch unique users
