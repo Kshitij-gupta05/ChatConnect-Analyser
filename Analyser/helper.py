@@ -80,14 +80,46 @@ def most_common_words(selected_user,df):
     return most_common_df
 
 def emoji_helper(selected_user,df):
+    # if selected_user != 'Overall':
+    #     df = df[df['user'] == selected_user]
+
+    # emojis = []
+    # for message in df['message']:
+    #     emojis.extend([c for c in message if c in emoji.UNICODE_EMOJI['en']])
+
+    # emoji_df = pd.DataFrame(Counter(emojis).most_common(len(Counter(emojis))))
+
+    # return emoji_df
+    
+     # Check if the DataFrame is valid
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError("The input df must be a pandas DataFrame.")
+
+    # Check if 'user' and 'message' columns exist in the DataFrame
+    if 'user' not in df.columns or 'message' not in df.columns:
+        raise ValueError("DataFrame must contain 'user' and 'message' columns.")
+
+    # Filter the DataFrame based on the selected user, if not 'Overall'
     if selected_user != 'Overall':
+        if selected_user not in df['user'].unique():
+            raise ValueError(f"Selected user {selected_user} not found in the DataFrame.")
         df = df[df['user'] == selected_user]
 
+    # Initialize a list to store found emojis
     emojis = []
-    for message in df['message']:
-        emojis.extend([c for c in message if c in emoji.UNICODE_EMOJI['en']])
 
-    emoji_df = pd.DataFrame(Counter(emojis).most_common(len(Counter(emojis))))
+    # Iterate over each message and extract emojis
+    for message in df['message']:
+        emojis.extend([c for c in message if c in emoji.EMOJI_DATA])
+
+    # If no emojis are found, return an empty DataFrame with appropriate columns
+    if not emojis:
+        return pd.DataFrame(columns=['Emoji', 'Count'])
+
+    # Count the occurrences of each emoji and create a DataFrame from the counter
+    emoji_counter = Counter(emojis)
+    emoji_df = pd.DataFrame(emoji_counter.items(), columns=['Emoji', 'Count'])
+    emoji_df = emoji_df.sort_values(by='Count', ascending=False).reset_index(drop=True)
 
     return emoji_df
 
