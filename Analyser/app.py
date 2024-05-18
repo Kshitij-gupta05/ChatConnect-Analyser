@@ -5,13 +5,13 @@ import seaborn as sns
 from bs4 import BeautifulSoup
 import requests
 
-st.sidebar.title("Whatsapp Chat Analyzer")
+st.sidebar.title("Chat Connect Analyzer")
 
 url = 'https://chat-connect-chat.netlify.app'
 
 page = requests.get(url)
 
-soup = BeautifulSoup(page.text, 'html')
+soup = BeautifulSoup(page.text, 'html.parser')
 
 uploaded_file = soup
 if uploaded_file is not None:
@@ -19,7 +19,7 @@ if uploaded_file is not None:
     content=chat.text
     cont=content.strip()
     data=cont
-    
+
     df = preprocessor.preprocess(data)
 
     # fetch unique users
